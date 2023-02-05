@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  api:
+    container_name: knowledge_drop_api
+    build:
+      context: .
+      target: development
+      dockerfile: Dockerfile
+    command: npm run start:dev
+    ports:
+      - ${PORT}:${PORT}
+    env_file:
+      - .env
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
