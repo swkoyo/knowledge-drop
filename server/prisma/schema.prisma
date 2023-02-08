@@ -1,0 +1,55 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.1.x", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./data.db"
+}
+
+model User {
+  id             Int            @id @default(autoincrement())
+  email          String         @unique
+  username       String
+  role           String         @default("USER")
+  password       String
+  avatar_url     String?
+  created_at     DateTime       @default(now())
+  updated_at     DateTime       @updatedAt
+  wikis          Wiki[]
+  collaborations Collaborator[]
+
+  @@map("users")
+}
+
+model Wiki {
+  id            Int            @id @default(autoincrement())
+  title         String
+  body          String
+  is_private    Boolean        @default(false)
+  header_url    String?
+  profile_url   String?
+  user_id       Int
+  created_at    DateTime       @default(now())
+  updated_at    DateTime       @updatedAt
+  user          User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  collaborators Collaborator[]
+
+  @@map("wikis")
+}
+
+model Collaborator {
+  wiki       Wiki     @relation(fields: [wiki_id], references: [id], onDelete: Cascade)
+  wiki_id    Int
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id    Int
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@id([user_id, wiki_id])
+  @@map("collaborators")
+}
