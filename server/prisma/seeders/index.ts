@@ -31,7 +31,7 @@ const prisma = new PrismaClient();
             }
         });
 
-        console.log('Seeding wikis');
+        console.log('Seeding wiki');
 
         for (let i = 0; i < 30; i++) {
             await prisma.wiki.create({
